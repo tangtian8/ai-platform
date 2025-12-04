@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: intelligent-analysis-system
+
+  # Spring AI 配置
+  #  ai:
+  #    # OpenAI 配置示例
+  #    openai:
+  #      api-key: ${OPENAI_API_KEY}
+  #      chat:
+  #        options:
+  #          model: gpt-4
+  #          temperature: 0.7
+  ai:
+    openai:
+      # DeepSeek使用OpenAI兼容的API
+      base-url: https://api.deepseek.com
+      api-key: ${DEEPSEEK_API_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
+          max-tokens: 2000
+
+    # 或使用其他AI提供商，如 Azure OpenAI
+    # azure:
+    #   openai:
+    #     api-key: ${AZURE_OPENAI_API_KEY}
+    #     endpoint: ${AZURE_OPENAI_ENDPOINT}
+
+# Elasticsearch 配置
+elasticsearch:
+  host: localhost
+  port: 9200
+
+# 定时任务开关
+scheduling:
+  enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.example.analysis: INFO
+    org.elasticsearch: WARN
+    org.elasticsearch.client.RestClient: DEBUG
+    org.apache.http: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: logs/analysis.log
+
+# 服务器配置
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+# 禁用自动采集
+collector:
+  enabled: false
+
+# 管理端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true

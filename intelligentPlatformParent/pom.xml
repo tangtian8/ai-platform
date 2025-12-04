@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- ==================== 父项目配置 ==================== -->
+  <groupId>top.tangtian</groupId>
+  <artifactId>intelligent-platform</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Intelligent Platform Parent</name>
+  <description>AI驱动的智能业务平台</description>
+
+  <!-- ==================== 子模块声明 ==================== -->
+  <modules>
+    <module>meeting-room-booking</module>
+    <module>common</module>
+    <module>ai-core</module>
+    <module>decision-analysis</module>
+  </modules>
+
+  <!-- ==================== 属性配置 ==================== -->
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- 依赖版本统一管理 -->
+    <spring-boot.version>3.5.0</spring-boot.version>
+    <spring-ai.version>1.0.0-M6</spring-ai.version>
+    <lombok.version>1.18.30</lombok.version>
+    <hutool.version>5.8.23</hutool.version>
+  </properties>
+
+  <!-- ==================== 依赖管理 ==================== -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- AI Core 模块 (其他模块依赖) -->
+      <dependency>
+        <groupId>top.tangtian</groupId>
+        <artifactId>ai-core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Common 模块 -->
+      <dependency>
+        <groupId>top.tangtian</groupId>
+        <artifactId>common</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Spring AI -->
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+        <version>${spring-ai.version}</version>
+      </dependency>
+
+      <!-- Lombok -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
+
+      <!-- Hutool工具类 -->
+      <dependency>
+        <groupId>cn.hutool</groupId>
+        <artifactId>hutool-all</artifactId>
+        <version>${hutool.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- ==================== 构建配置 ==================== -->
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.11.0</version>
+          <configuration>
+            <parameters>true</parameters>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
