@@ -48,7 +48,7 @@ public class AnalysisScheduledTasksMockTest {
 				.thenReturn(mockData);
 
 		// When
-		String report = aiAnalysisService.generateDailyReport(testDate);
+		String report = aiAnalysisService.generateDailyReport(testDate,testDate);
 
 		// Then
 		assertNotNull(report, "报告不应为null");
@@ -190,7 +190,7 @@ public class AnalysisScheduledTasksMockTest {
 				.thenReturn(emptyData);
 
 		// When
-		String report = aiAnalysisService.generateDailyReport(LocalDate.now());
+		String report = aiAnalysisService.generateDailyReport(LocalDate.now(),LocalDate.now());
 
 		// Then
 		assertNotNull(report, "即使数据为空，也应返回报告");
@@ -215,7 +215,7 @@ public class AnalysisScheduledTasksMockTest {
 				.thenReturn(abnormalData);
 
 		// When
-		String report = aiAnalysisService.generateDailyReport(LocalDate.now());
+		String report = aiAnalysisService.generateDailyReport(LocalDate.now(),LocalDate.now());
 
 		// Then
 		assertNotNull(report);
@@ -236,19 +236,19 @@ public class AnalysisScheduledTasksMockTest {
 
 		// When & Then - 昨天
 		String yesterdayReport = aiAnalysisService.generateDailyReport(
-				LocalDate.now().minusDays(1)
+				LocalDate.now().minusDays(1),LocalDate.now()
 		);
 		assertNotNull(yesterdayReport);
 
 		// When & Then - 上周
 		String lastWeekReport = aiAnalysisService.generateDailyReport(
-				LocalDate.now().minusDays(7)
+				LocalDate.now().minusDays(7),LocalDate.now()
 		);
 		assertNotNull(lastWeekReport);
 
 		// When & Then - 上月
 		String lastMonthReport = aiAnalysisService.generateDailyReport(
-				LocalDate.now().minusDays(30)
+				LocalDate.now().minusDays(30),LocalDate.now()
 		);
 		assertNotNull(lastMonthReport);
 
@@ -269,7 +269,7 @@ public class AnalysisScheduledTasksMockTest {
 		// When - 连续调用5次
 		List<String> reports = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
-			String report = aiAnalysisService.generateDailyReport(LocalDate.now());
+			String report = aiAnalysisService.generateDailyReport(LocalDate.now(),LocalDate.now());
 			reports.add(report);
 		}
 

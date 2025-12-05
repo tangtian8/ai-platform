@@ -1,10 +1,7 @@
 package top.tangtian.esanalysis.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
-import co.elastic.clients.elasticsearch._types.aggregations.CalendarInterval;
-import co.elastic.clients.elasticsearch._types.aggregations.DateHistogramBucket;
-import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
+import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import co.elastic.clients.json.JsonData;
@@ -94,16 +91,26 @@ public class ElasticsearchService {
 											.size(50)
 									)
 							)
-							.aggregations("by_field", a -> a
-									.terms(t -> t
-											.field("field_name")
-											.size(50)
-									)
-							)
 							.aggregations("by_source", a -> a
 									.terms(t -> t
 											.field("source")
 											.size(20)
+									)
+							)
+							// 标题关键词分析（使用 significant_text）
+							.aggregations("title_keywords", a -> a
+									.significantText(st -> st
+											.field("title")
+											.size(20)
+											.minDocCount(2L)
+									)
+							)
+							// 内容关键词分析（使用 significant_text）
+							.aggregations("content_keywords", a -> a
+									.significantText(st -> st
+											.field("content")
+											.size(30)
+											.minDocCount(3L)
 									)
 							)
 							.aggregations("daily_trend", a -> a
@@ -127,8 +134,14 @@ public class ElasticsearchService {
 			result.put("total", response.hits().total().value());
 			result.put("statusDistribution", parseTermsAggregation(response.aggregations().get("by_status")));
 			result.put("organizationDistribution", parseTermsAggregation(response.aggregations().get("by_organization")));
-			result.put("fieldDistribution", parseTermsAggregation(response.aggregations().get("by_field")));
 			result.put("sourceDistribution", parseTermsAggregation(response.aggregations().get("by_source")));
+
+			// 解析标题关键词
+			result.put("titleKeywords", parseSignificantTextAggregation(response.aggregations().get("title_keywords")));
+
+			// 解析内容关键词
+			result.put("contentKeywords", parseSignificantTextAggregation(response.aggregations().get("content_keywords")));
+
 			result.put("dailyTrend", parseDateHistogram(response.aggregations().get("daily_trend")));
 
 			Aggregate avgSat = response.aggregations().get("avg_satisfaction");
@@ -139,7 +152,6 @@ public class ElasticsearchService {
 			result.put("replyCount", repliedCount);
 			result.put("replyRate", String.format("%.2f%%",
 					(double) repliedCount / response.hits().total().value() * 100));
-			log.info("analyzeDailyDataFrom:{}",result);
 
 			return result;
 
@@ -184,7 +196,7 @@ public class ElasticsearchService {
 			Map<String, Object> result = new HashMap<>();
 			result.put("keywords", response.aggregations().get("hot_keywords"));
 			result.put("tags", parseTermsAggregation(response.aggregations().get("top_tags")));
-			log.info("getHotTopicsFromES:{}",result);
+
 			return result;
 
 		} catch (IOException e) {
@@ -211,6 +223,19 @@ public class ElasticsearchService {
 				item.put("date", bucket.keyAsString());
 				item.put("count", bucket.docCount());
 				result.add(item);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 解析 SignificantText 聚合结果（关键词分析）
+	 */
+	private Map<String, Long> parseSignificantTextAggregation(Aggregate agg) {
+		Map<String, Long> result = new LinkedHashMap<>();
+		if (agg != null) {
+			for (SignificantStringTermsBucket bucket : agg.sigsterms().buckets().array()) {
+				result.put(bucket.key().toString(), bucket.docCount());
 			}
 		}
 		return result;

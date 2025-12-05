@@ -15,7 +15,7 @@ spring:
     openai:
       # DeepSeek使用OpenAI兼容的API
       base-url: https://api.deepseek.com
-      api-key: ${DEEPSEEK_API_KEY} # sk-3067c343ee2c4bd7a87d0ad48022ef13
+      api-key: ${DEEPSEEK_API_KEY}
       chat:
         options:
           model: deepseek-chat

@@ -51,11 +51,11 @@ public class AnalysisController {
 	 */
 	@GetMapping("/report/daily")
 	public ResponseEntity<Map<String, String>> getDailyReport(
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-		LocalDate targetDate = date != null ? date : LocalDate.now().minusDays(1);
-		String report = aiAnalysisService.generateDailyReport(targetDate);
+			@RequestParam() @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+			@RequestParam() @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+		String report = aiAnalysisService.generateDailyReport(startDate,endDate);
 		return ResponseEntity.ok(Map.of(
-				"date", targetDate.toString(),
+				"date", startDate.toString(),
 				"report", report
 		));
 	}

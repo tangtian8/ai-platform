@@ -25,10 +25,12 @@ public class AnalysisScheduledTasks {
 	@Scheduled(cron = "0 0 1 * * ?")
 	public void generateDailyReport() {
 		try {
+			LocalDate now = LocalDate.now();
+
 			LocalDate yesterday = LocalDate.now().minusDays(1);
 			log.info("开始生成 {} 的每日分析报告", yesterday);
 
-			String report = aiAnalysisService.generateDailyReport(yesterday);
+			String report = aiAnalysisService.generateDailyReport(yesterday,now);
 
 			// 保存报告到数据库或文件系统
 			saveReport("daily", yesterday.toString(), report);
