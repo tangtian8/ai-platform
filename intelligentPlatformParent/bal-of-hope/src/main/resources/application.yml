@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    # MySQL配置
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/lottery_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: your_password
+
+    # PostgreSQL配置（可选）
+     driver-class-name: org.postgresql.Driver
+     url: jdbc:postgresql://localhost:5432/tangtian
+     username: dhis2
+     password: dhis2
+
+    # Oracle配置（可选）
+    # driver-class-name: oracle.jdbc.OracleDriver
+    # url: jdbc:oracle:thin:@localhost:1521:orcl
+    # username: system
+    # password: your_password
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.yourpackage.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0

@@ -20,6 +20,7 @@
     <module>common</module>
     <module>ai-core</module>
     <module>decision-analysis</module>
+    <module>bal-of-hope</module>
   </modules>
 
   <!-- ==================== 属性配置 ==================== -->
@@ -46,6 +47,13 @@
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+        <version>3.5.14</version>
       </dependency>
 
       <!-- AI Core 模块 (其他模块依赖) -->
