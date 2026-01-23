@@ -43,6 +43,12 @@
 <!--            <version>3.5.14</version>-->
         </dependency>
 
+        <!-- MyBatis-Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
         <!-- MySQL驱动 -->
 <!--        <dependency>-->
 <!--            <groupId>mysql</groupId>-->

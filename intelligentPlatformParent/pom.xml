@@ -55,6 +55,11 @@
         <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
         <version>3.5.14</version>
       </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>3.5.5</version>
+      </dependency>
 
       <!-- AI Core 模块 (其他模块依赖) -->
       <dependency>

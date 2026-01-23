@@ -1,4 +1,4 @@
-package top.tangtian.balofhope.dlt.model.req;
+package top.tangtian.balofhope.dlt.colletcion.model.req;
 
 /**
  * @author tangtian

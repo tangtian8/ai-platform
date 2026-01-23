@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.tangtian.balofhope.dlt.colletcion.DltCollection;
-import top.tangtian.balofhope.dlt.model.CrawlResult;
-import top.tangtian.balofhope.dlt.model.resp.DltApiResponse;
-import top.tangtian.balofhope.dlt.model.resp.DltLotteryDraw;
+import top.tangtian.balofhope.dlt.colletcion.model.CrawlResult;
+import top.tangtian.balofhope.dlt.colletcion.model.resp.DltApiResponse;
+import top.tangtian.balofhope.dlt.colletcion.model.resp.DltLotteryDraw;
 import top.tangtian.balofhope.dlt.storage.service.IDltLotteryDrawService;
 
 import java.net.URLEncoder;

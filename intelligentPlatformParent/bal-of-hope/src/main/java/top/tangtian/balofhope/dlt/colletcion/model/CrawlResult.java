@@ -1,4 +1,4 @@
-package top.tangtian.balofhope.dlt.model;
+package top.tangtian.balofhope.dlt.colletcion.model;
 
 import java.time.LocalDateTime;
 

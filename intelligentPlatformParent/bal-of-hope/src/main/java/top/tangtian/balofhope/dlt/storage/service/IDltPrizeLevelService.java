@@ -1,7 +1,7 @@
 package top.tangtian.balofhope.dlt.storage.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import top.tangtian.balofhope.dlt.model.resp.PrizeLevel;
+import top.tangtian.balofhope.dlt.colletcion.model.resp.PrizeLevel;
 import top.tangtian.balofhope.dlt.storage.entity.DltPrizeLevelEntity;
 
 import java.util.List;

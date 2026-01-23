@@ -3,7 +3,7 @@ package top.tangtian.balofhope.dlt.storage.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.tangtian.balofhope.dlt.model.resp.PrizeLevel;
+import top.tangtian.balofhope.dlt.colletcion.model.resp.PrizeLevel;
 import top.tangtian.balofhope.dlt.storage.entity.DltPrizeLevelEntity;
 import top.tangtian.balofhope.dlt.storage.mapper.DltPrizeLevelMapper;
 import top.tangtian.balofhope.dlt.storage.service.IDltPrizeLevelService;

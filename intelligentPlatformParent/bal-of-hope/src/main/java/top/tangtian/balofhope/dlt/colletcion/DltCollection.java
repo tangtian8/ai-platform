@@ -1,9 +1,7 @@
 package top.tangtian.balofhope.dlt.colletcion;
 
-import top.tangtian.balofhope.dlt.model.CrawlResult;
-import top.tangtian.balofhope.dlt.model.req.DltLotteryRequest;
-import top.tangtian.balofhope.dlt.model.resp.DltApiResponse;
-import top.tangtian.balofhope.dlt.model.resp.DltLotteryDraw;
+import top.tangtian.balofhope.dlt.colletcion.model.CrawlResult;
+import top.tangtian.balofhope.dlt.colletcion.model.resp.DltLotteryDraw;
 
 /**
  * @author tangtian

@@ -1,0 +1,10 @@
+package top.tangtian.balofhope.dlt.analyze.service.analysisstorage;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import top.tangtian.balofhope.dlt.analyze.entity.DltAnalysisReportEntity;
+
+/**
+ * @author tangtian
+ * @date 2026-01-23 09:18
+ */
+public interface IDltAnalysisReportService extends IService<DltAnalysisReportEntity> {}
