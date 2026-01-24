@@ -8,9 +8,9 @@ spring:
 
     # PostgreSQL配置（可选）
      driver-class-name: org.postgresql.Driver
-     url: jdbc:postgresql://localhost:5432/tangtian
-     username: dhis2
-     password: dhis2
+     url: jdbc:postgresql://localhost:5432/tangtian?currentSchema=dlt
+     username: tangtian
+     password: tangtian
 
     # Oracle配置（可选）
     # driver-class-name: oracle.jdbc.OracleDriver
@@ -20,8 +20,7 @@ spring:
 
 # MyBatis-Plus配置
 mybatis-plus:
-  mapper-locations: classpath*:mapper/**/*.xml
-  type-aliases-package: com.yourpackage.entity
+  type-aliases-package: top.tangtian.balofhope.dlt.analyze.entity,top.tangtian.balofhope.dlt.storage.entity
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

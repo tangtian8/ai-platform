@@ -2,6 +2,7 @@ package top.tangtian.balofhope.dlt.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +12,11 @@ import org.springframework.context.annotation.Configuration;
  * @date 2026-01-23 10:42
  */
 @Configuration
-@MapperScan("top.tangtian.balofhope.dlt") // 修改为你的mapper包路径
-public class MyBatisPlusConfig {
+//这个一定要精确 不然会导致接口也会被扫描到
+@MapperScan({
+		"top.tangtian.balofhope.dlt.analyze.mapper",
+		"top.tangtian.balofhope.dlt.storage.mapper"
+})public class MyBatisPlusConfig {
 
 	/**
 	 * 分页插件
@@ -20,7 +24,7 @@ public class MyBatisPlusConfig {
 	@Bean
 	public MybatisPlusInterceptor mybatisPlusInterceptor() {
 		MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-		interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+		interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.POSTGRE_SQL));
 		return interceptor;
 	}
 }

@@ -1,4 +1,4 @@
-package top.tangtian.balofhope.dlt.analyze.service.analysisstorage;
+package top.tangtian.balofhope.dlt.analyze.service.analysisstorage.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.slf4j.Logger;

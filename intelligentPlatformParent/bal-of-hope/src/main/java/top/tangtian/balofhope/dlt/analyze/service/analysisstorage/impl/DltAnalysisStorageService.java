@@ -1,11 +1,13 @@
-package top.tangtian.balofhope.dlt.analyze.service.analysisstorage;
+package top.tangtian.balofhope.dlt.analyze.service.analysisstorage.impl;
 
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.tangtian.balofhope.dlt.analyze.entity.*;
+import top.tangtian.balofhope.dlt.analyze.service.analysisstorage.*;
 import top.tangtian.balofhope.dlt.analyze.service.vo.*;
 
 import java.math.BigDecimal;

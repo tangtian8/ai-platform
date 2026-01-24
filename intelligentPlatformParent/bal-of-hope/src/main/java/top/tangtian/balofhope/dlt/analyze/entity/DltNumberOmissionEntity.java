@@ -1,10 +1,5 @@
 package top.tangtian.balofhope.dlt.analyze.entity;
 
-/**
- * @author tangtian
- * @date 2026-01-23 09:09
- */
-
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
@@ -12,6 +7,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
+ * @author tangtian
+ * @date 2026-01-23 09:09
  * ============================================================
  * 4. 号码遗漏分析结果表实体
  * ============================================================

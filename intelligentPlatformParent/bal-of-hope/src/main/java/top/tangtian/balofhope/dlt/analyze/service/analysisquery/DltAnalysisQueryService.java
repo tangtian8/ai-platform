@@ -1,6 +1,9 @@
 package top.tangtian.balofhope.dlt.analyze.service.analysisquery;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.tangtian.balofhope.dlt.analyze.entity.*;
@@ -8,10 +11,7 @@ import top.tangtian.balofhope.dlt.analyze.service.analysisstorage.*;
 import top.tangtian.balofhope.dlt.analyze.service.vo.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +23,7 @@ public class DltAnalysisQueryService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DltAnalysisQueryService.class);
 
-	@Autowired
+	@Resource(name = "dltNumberFrequencyServiceImpl")
 	private IDltNumberFrequencyService numberFrequencyService;
 
 	@Autowired
@@ -216,7 +216,7 @@ public class DltAnalysisQueryService {
 		QueryWrapper<DltPrizeStatisticsEntity> wrapper = new QueryWrapper<>();
 		wrapper.eq("batch_no", batchNo)
 				.eq("is_deleted", 0)
-				.orderBySql("CASE prize_level " +
+				.orderByAsc("CASE prize_level " +
 						"WHEN '一等奖' THEN 1 " +
 						"WHEN '二等奖' THEN 2 " +
 						"WHEN '三等奖' THEN 3 " +
