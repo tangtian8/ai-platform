@@ -343,7 +343,7 @@ public class DltDataAnalysisService {
 		report.setRedBallOmission(analyzeRedBallOmission());
 
 		// 5. 推荐号码
-		report.setRecommendNumbers(generateRecommendNumbers());
+		report.setRecommendNumbers(generateRecommendNumbers(recentCount));
 
 		logger.info("综合分析报告生成完成");
 		return report;
@@ -352,36 +352,66 @@ public class DltDataAnalysisService {
 	/**
 	 * 8. 智能推荐号码（基于统计分析）
 	 */
-	public RecommendNumbers generateRecommendNumbers() {
+	public RecommendNumbers generateRecommendNumbers(Integer recentCount) {
 		logger.info("生成推荐号码");
 
 		// 基于最近100期数据分析
-		NumberFrequencyStats redStats = analyzeRedBallFrequency(100);
-		NumberFrequencyStats blueStats = analyzeBlueBallFrequency(100);
+		NumberFrequencyStats redStats = analyzeRedBallFrequency(recentCount);
+		NumberFrequencyStats blueStats = analyzeBlueBallFrequency(recentCount);
 		NumberOmissionAnalysis omission = analyzeRedBallOmission();
 
-		// 策略1: 热号推荐（高频号码）
-		List<Integer> hotReds = redStats.getHotNumbers().stream()
+//		// 策略1: 热号推荐（高频号码）
+//		List<Integer> hotReds = redStats.getHotNumbers().stream()
+//				.limit(10)
+//				.map(NumberFrequency::getNumber)
+//				.collect(Collectors.toList());
+//
+//		// 策略2: 遗漏号推荐（当前遗漏较大的号码）
+//		List<Integer> omissionReds = omission.getTopOmissions().stream()
+//				.limit(10)
+//				.map(NumberOmission::getNumber)
+//				.collect(Collectors.toList());
+//
+//		// 策略3: 均衡推荐（热号+冷号+遗漏号）
+//		Set<Integer> balancedReds = new HashSet<>();
+//		balancedReds.addAll(hotReds.subList(0, Math.min(4, hotReds.size())));
+//		balancedReds.addAll(omissionReds.subList(0, Math.min(1, omissionReds.size())));
+//
+//		// 蓝球推荐
+//		List<Integer> recommendBlues = blueStats.getHotNumbers().stream()
+//				.limit(2)
+//				.map(NumberFrequency::getNumber)
+//				.collect(Collectors.toList());
+
+		Random random = new Random();
+
+
+		// 策略1: 热号推荐（从TOP10中随机选5个）
+		List<Integer> hotRedPool = redStats.getHotNumbers().stream()
 				.limit(10)
 				.map(NumberFrequency::getNumber)
 				.collect(Collectors.toList());
+		List<Integer> hotReds = getRandomNumbers(hotRedPool, Math.min(5, hotRedPool.size()), random);
 
-		// 策略2: 遗漏号推荐（当前遗漏较大的号码）
-		List<Integer> omissionReds = omission.getTopOmissions().stream()
+		// 策略2: 遗漏号推荐（从TOP10遗漏中随机选5个）
+		List<Integer> omissionRedPool = omission.getTopOmissions().stream()
 				.limit(10)
 				.map(NumberOmission::getNumber)
 				.collect(Collectors.toList());
+		List<Integer> omissionReds = getRandomNumbers(omissionRedPool, Math.min(5, omissionRedPool.size()), random);
 
-		// 策略3: 均衡推荐（热号+冷号+遗漏号）
+		// 策略3: 均衡推荐（热号随机4个 + 遗漏号随机1个）
 		Set<Integer> balancedReds = new HashSet<>();
-		balancedReds.addAll(hotReds.subList(0, Math.min(3, hotReds.size())));
-		balancedReds.addAll(omissionReds.subList(0, Math.min(2, omissionReds.size())));
+		balancedReds.addAll(getRandomNumbers(hotRedPool, Math.min(4, hotRedPool.size()), random));
+		balancedReds.addAll(getRandomNumbers(omissionRedPool, Math.min(1, omissionRedPool.size()), random));
 
-		// 蓝球推荐
-		List<Integer> recommendBlues = blueStats.getHotNumbers().stream()
-				.limit(3)
+		// 蓝球推荐（从TOP5热门蓝球中随机选2个）
+		List<Integer> bluePool = blueStats.getHotNumbers().stream()
+				.limit(5)
 				.map(NumberFrequency::getNumber)
 				.collect(Collectors.toList());
+		List<Integer> recommendBlues = getRandomNumbers(bluePool, Math.min(2, bluePool.size()), random);
+
 
 		RecommendNumbers recommend = new RecommendNumbers();
 		recommend.setHotRedNumbers(hotReds);
@@ -428,5 +458,33 @@ public class DltDataAnalysisService {
 				.collect(Collectors.toList()));
 
 		return stats;
+	}
+
+	/**
+	 * 从列表中随机选取指定数量的不重复元素
+	 */
+	private List<Integer> getRandomNumbers(List<Integer> pool, int count, Random random) {
+		if (pool == null || pool.isEmpty() || count <= 0) {
+			return new ArrayList<>();
+		}
+
+		// 如果需要的数量大于等于池子大小，直接返回所有
+		if (count >= pool.size()) {
+			return new ArrayList<>(pool);
+		}
+
+		// 创建副本避免修改原列表
+		List<Integer> poolCopy = new ArrayList<>(pool);
+		List<Integer> result = new ArrayList<>();
+
+		// 随机抽取
+		for (int i = 0; i < count; i++) {
+			int randomIndex = random.nextInt(poolCopy.size());
+			result.add(poolCopy.remove(randomIndex));
+		}
+
+		// 排序后返回
+		Collections.sort(result);
+		return result;
 	}
 }

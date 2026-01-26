@@ -3,7 +3,6 @@ package top.tangtian.balofhope.dlt.config;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,11 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 //这个一定要精确 不然会导致接口也会被扫描到
-@MapperScan({
-		"top.tangtian.balofhope.dlt.analyze.mapper",
-		"top.tangtian.balofhope.dlt.storage.mapper"
-})public class MyBatisPlusConfig {
-
+public class MyBatisPlusConfig {
 	/**
 	 * 分页插件
 	 */

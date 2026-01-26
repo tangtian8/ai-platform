@@ -30,7 +30,11 @@ public class DltCollectionTest {
 	}
 
 	@Test
-	void crawlLatestData(){
+	void getLatestDrawInfoTest(){
 		dltCollection.getLatestDrawInfo();
+	}
+	@Test
+	void crawlLatestData(){
+		dltCollection.crawlLatestData();
 	}
 }

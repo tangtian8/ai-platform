@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import top.tangtian.balofhope.BalHopeApplication;
-import top.tangtian.balofhope.dlt.colletcion.DltCollection;
-import top.tangtian.balofhope.dlt.colletcion.DltCollectionTest;
 
 /**
  * @author tangtian
@@ -24,7 +22,20 @@ public class ScheduledGenerateReportTest {
 	@Resource
 	private ScheduledGenerateReport scheduledGenerateReport;
 	@Test
-	void scheduledDailyAnalysisTest(){
-		scheduledGenerateReport.executeAnalysisTask(100, "DAILY");
+	void scheduledDailyAnalysisDailyTest(){
+		scheduledGenerateReport.executeAnalysisTask(100, "一百");
 	}
+	@Test
+	void scheduledDailyAnalysisWeekTest(){
+		scheduledGenerateReport.executeAnalysisTask(500, "五百");
+	}
+	@Test
+	void scheduledDailyAnalysisMONTHLYTest(){
+		scheduledGenerateReport.executeAnalysisTask(1000, "一千");
+	}
+	@Test
+	void scheduledDailyAnalysisREALTIMETest(){
+		scheduledGenerateReport.executeAnalysisTask(10*10000, "所有");
+	}
+
 }

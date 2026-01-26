@@ -326,3 +326,109 @@ CREATE TRIGGER update_recommend_numbers_modtime
 CREATE TRIGGER update_analysis_report_modtime
     BEFORE UPDATE ON dlt_analysis_report
     FOR EACH ROW EXECUTE FUNCTION update_analysis_modtime();
+
+
+- ============================================================
+-- 大乐透推荐任务表 - PostgreSQL 建表脚本（增加用户维度）
+-- ============================================================
+SET search_path TO "$user", dlt;
+CREATE TABLE IF NOT EXISTS dlt_recommend_task (
+    id BIGSERIAL PRIMARY KEY,
+
+    -- 用户信息
+    user_id BIGINT NOT NULL,
+    user_name VARCHAR(100),
+
+    -- 推荐信息
+    recommend_batch VARCHAR(100) NOT NULL,
+    recommend_strategy VARCHAR(20) NOT NULL,
+    analyzed_periods INTEGER,
+    recommend_time TIMESTAMP,
+
+    -- 目标期号
+    target_draw_num VARCHAR(20),
+
+    -- 推荐1（红球+蓝球）
+    red_balls_1 VARCHAR(50),
+    blue_balls_1 VARCHAR(20),
+
+    -- 推荐2（红球+蓝球）
+    red_balls_2 VARCHAR(50),
+    blue_balls_2 VARCHAR(20),
+
+    -- 推荐3（红球+蓝球）
+    red_balls_3 VARCHAR(50),
+    blue_balls_3 VARCHAR(20),
+
+    -- 推荐4（红球+蓝球）
+    red_balls_4 VARCHAR(50),
+    blue_balls_4 VARCHAR(20),
+
+    -- 开奖验证
+    is_drawed BOOLEAN DEFAULT FALSE,
+    actual_draw_num VARCHAR(20),
+    actual_draw_result VARCHAR(100),
+
+    -- 推荐1验证结果
+    hit_red_count_1 INTEGER DEFAULT 0,
+    hit_blue_count_1 INTEGER DEFAULT 0,
+    prize_level_1 VARCHAR(20),
+
+    -- 推荐2验证结果
+    hit_red_count_2 INTEGER DEFAULT 0,
+    hit_blue_count_2 INTEGER DEFAULT 0,
+    prize_level_2 VARCHAR(20),
+
+    -- 推荐3验证结果
+    hit_red_count_3 INTEGER DEFAULT 0,
+    hit_blue_count_3 INTEGER DEFAULT 0,
+    prize_level_3 VARCHAR(20),
+
+    -- 推荐4验证结果
+    hit_red_count_4 INTEGER DEFAULT 0,
+    hit_blue_count_4 INTEGER DEFAULT 0,
+    prize_level_4 VARCHAR(20),
+
+    -- 最佳推荐编号（1-4）
+    best_recommend_no INTEGER,
+
+    -- 验证时间
+    verify_time TIMESTAMP,
+
+    -- 备注
+    remark TEXT,
+
+    -- 系统字段
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_deleted SMALLINT DEFAULT 0,
+
+    -- 唯一约束：每个用户每期只能推荐一次
+    CONSTRAINT uk_user_draw UNIQUE (user_id, target_draw_num, is_deleted)
+);
+
+-- 添加注释
+COMMENT ON TABLE dlt_recommend_task IS '大乐透推荐任务表';
+COMMENT ON COLUMN dlt_recommend_task.user_id IS '用户ID';
+COMMENT ON COLUMN dlt_recommend_task.user_name IS '用户名称';
+COMMENT ON COLUMN dlt_recommend_task.recommend_batch IS '推荐批次号';
+COMMENT ON COLUMN dlt_recommend_task.recommend_strategy IS '推荐策略：DAILY-日推荐, WEEKLY-周推荐, MONTHLY-月推荐, ALL-全量推荐';
+COMMENT ON COLUMN dlt_recommend_task.analyzed_periods IS '分析数据量（期数）';
+COMMENT ON COLUMN dlt_recommend_task.target_draw_num IS '目标期号（预测下一期）';
+COMMENT ON COLUMN dlt_recommend_task.red_balls_1 IS '推荐1红球（5个号码，逗号分隔）';
+COMMENT ON COLUMN dlt_recommend_task.blue_balls_1 IS '推荐1蓝球（2个号码，逗号分隔）';
+COMMENT ON COLUMN dlt_recommend_task.is_drawed IS '是否已开奖';
+COMMENT ON COLUMN dlt_recommend_task.hit_red_count_1 IS '推荐1命中红球数';
+COMMENT ON COLUMN dlt_recommend_task.hit_blue_count_1 IS '推荐1命中蓝球数';
+COMMENT ON COLUMN dlt_recommend_task.prize_level_1 IS '推荐1中奖等级';
+COMMENT ON COLUMN dlt_recommend_task.best_recommend_no IS '最佳推荐编号（1-4）';
+
+-- 创建索引
+CREATE INDEX idx_recommend_user_dlt_recommend_task ON dlt_recommend_task(user_id);
+CREATE INDEX idx_recommend_batch_dlt_recommend_task ON dlt_recommend_task(recommend_batch);
+CREATE INDEX idx_recommend_strategy_dlt_recommend_task ON dlt_recommend_task(recommend_strategy);
+CREATE INDEX idx_recommend_time_dlt_recommend_task ON dlt_recommend_task(recommend_time);
+CREATE INDEX idx_target_draw_dlt_recommend_task ON dlt_recommend_task(target_draw_num);
+CREATE INDEX idx_is_drawed_dlt_recommend_task ON dlt_recommend_task(is_drawed);
+CREATE INDEX idx_user_time_dlt_recommend_task ON dlt_recommend_task(user_id, recommend_time);
+
