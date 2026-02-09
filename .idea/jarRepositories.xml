@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="central-portal-snapshots" />
+      <option name="name" value="Central Portal Snapshots" />
+      <option name="url" value="https://central.sonatype.com/repository/maven-snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="yinhaiyun-yiliao" />
+      <option name="name" value="YinHaiYun Yiliao Repository" />
+      <option name="url" value="http://maven1.yinhaiyun.com/repository/yiliao/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="yinhaiyun-public" />
+      <option name="name" value="public" />
+      <option name="url" value="http://maven1.yinhaiyun.com/repository/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="yinhaiyun-sibpm-release" />
+      <option name="name" value="YinHaiYun SIBPM Release Repository" />
+      <option name="url" value="http://maven1.yinhaiyun.com/repository/sibpm-release/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="spring-snapshots" />
+      <option name="name" value="Spring Snapshots" />
+      <option name="url" value="https://repo.spring.io/snapshot" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="yinhaiyun-sibpm" />
+      <option name="name" value="YinHaiYun SIBPM Repository" />
+      <option name="url" value="http://maven1.yinhaiyun.com/repository/sibpm/" />
+    </remote-repository>
+  </component>
+</project>
