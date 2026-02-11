@@ -1,0 +1,118 @@
+spring:
+  application:
+    name: private-ai-agent
+
+  # 数据库配置
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ai_agent_db
+    username: your_username
+    password: your_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Redis 配置 (用于会话缓存)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+  # AI 配置
+  ai:
+    # DeepSeek 配置 (使用 OpenAI 兼容接口)
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: https://api.deepseek.com/v1
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
+          max-tokens: 4000
+      embedding:
+        options:
+          model: text-embedding-v2  # DeepSeek Embedding 模型
+
+    # Embedding 提供商选择
+    embedding:
+      provider: deepseek  # 可选: deepseek, local
+      # 本地模型配置 (使用 local 时)
+      transformer:
+        onnx:
+          model-uri: classpath:/models/paraphrase-multilingual-MiniLM-L12-v2
+
+    # 向量存储配置
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024  # DeepSeek embedding 维度, 使用 local 时改为 384
+
+# 自定义配置
+agent:
+  # 记忆管理配置
+  memory:
+    # 短期记忆保留最近的对话轮数
+    short-term-window: 10
+    # 长期记忆摘要触发阈值
+    summary-threshold: 50
+    # 最大对话历史保存数
+    max-history: 1000
+    # 记忆压缩策略
+    compression:
+      enabled: true
+      # 每隔多少轮进行一次压缩
+      interval: 100
+
+  # 向量检索配置
+  retrieval:
+    # 检索相关文档数量
+    top-k: 5
+    # 相似度阈值 (0-1, 越高越严格)
+    similarity-threshold: 0.7
+    # 是否启用重排序
+    rerank: true
+    # 是否启用查询扩展
+    query-expansion: true
+    # 最大上下文长度 (字符数)
+    max-context-length: 4000
+
+  # 对话管理配置
+  conversation:
+    # 会话超时时间(分钟)
+    timeout: 30
+    # 是否自动保存对话
+    auto-save: true
+    # 保存间隔(秒)
+    save-interval: 60
+
+# 服务器配置
+server:
+  port: 8080
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.assistant: DEBUG
+    org.springframework.ai: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: logs/ai-agent.log

@@ -21,6 +21,7 @@
     <module>ai-core</module>
     <module>decision-analysis</module>
     <module>bal-of-hope</module>
+    <module>private-ai-agent</module>
   </modules>
 
   <!-- ==================== 属性配置 ==================== -->
@@ -79,6 +80,16 @@
       <dependency>
         <groupId>org.springframework.ai</groupId>
         <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+        <version>${spring-ai.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-pgvector-store-spring-boot-starter</artifactId>
+        <version>${spring-ai.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-transformers-spring-boot-starter</artifactId>
         <version>${spring-ai.version}</version>
       </dependency>
 
