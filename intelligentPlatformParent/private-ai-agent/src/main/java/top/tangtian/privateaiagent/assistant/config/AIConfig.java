@@ -3,10 +3,11 @@ package top.tangtian.privateaiagent.assistant.config;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +29,18 @@ public class AIConfig {
     @Value("${spring.ai.openai.base-url}")
     private String baseUrl;
 
+
+    @Value("${spring.ai.openai.chat.options.model}")
+    private String model;
     /**
      * 配置 DeepSeek Chat 模型
      */
     @Bean
     public OpenAiChatModel openAiChatModel() {
         OpenAiApi openAiApi = new OpenAiApi(baseUrl, apiKey);
-        return new OpenAiChatModel(openAiApi);
+        // 关键：在这里指定 DeepSeek 的模型名称，并设置其他参数
+        OpenAiChatOptions options = OpenAiChatOptions.builder().model(model).build();
+        return new OpenAiChatModel(openAiApi, options);
     }
 
     /**
@@ -50,21 +56,21 @@ public class AIConfig {
      * 注意: DeepSeek 也提供 embedding API,可以使用
      * 或者使用本地 Transformer 模型
      */
-    @Bean
-    public EmbeddingModel embeddingModel() {
-        // 使用 DeepSeek Embedding API
-        OpenAiApi embeddingApi = new OpenAiApi(baseUrl, apiKey);
-        return new OpenAiEmbeddingModel(embeddingApi);
-
-        // 或者使用本地模型:
-        // return new TransformersEmbeddingModel();
-    }
+//    @Bean
+//    public EmbeddingModel embeddingModel() {
+//        // 使用 DeepSeek Embedding API
+//        OpenAiApi embeddingApi = new OpenAiApi(baseUrl, apiKey);
+//        return new OpenAiEmbeddingModel(embeddingApi);
+//
+//        // 或者使用本地模型:
+//        // return new TransformersEmbeddingModel();
+//    }
 
     /**
      * 配置 PGVector 存储
      */
     @Bean
     public VectorStore vectorStore(JdbcTemplate jdbcTemplate, EmbeddingModel embeddingModel) {
-        return new PgVectorStore(jdbcTemplate, embeddingModel);
+        return PgVectorStore.builder(jdbcTemplate,embeddingModel).schemaName("ai_agent").build();
     }
 }

@@ -2,6 +2,7 @@ package top.tangtian.privateaiagent.assistant.tools.buildin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.document.Document;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import top.tangtian.privateaiagent.assistant.service.KnowledgeBaseService;
@@ -107,7 +108,7 @@ public class BuiltinToolsInitializer implements CommandLineRunner {
                         String content = (String) params.get("content");
                         String category = (String) params.getOrDefault("category", "其他");
 
-                        knowledgeBaseService.addKnowledge(userId, title, content, null, category, null);
+                        knowledgeBaseService.addKnowledge(userId, title, new Document(content), null, category, null);
                         return ToolResult.success("知识添加成功");
                     } catch (Exception e) {
                         return ToolResult.error("添加失败: " + e.getMessage());

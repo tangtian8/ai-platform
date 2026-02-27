@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
+import top.tangtian.privateaiagent.assistant.config.VectorType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -47,6 +49,7 @@ public class UserKnowledge {
     private String category;
 
     @Column(name = "embedding", columnDefinition = "vector(384)")
+    @Type(VectorType.class)
     private PGvector embedding;
 
     @Column(name = "created_at")

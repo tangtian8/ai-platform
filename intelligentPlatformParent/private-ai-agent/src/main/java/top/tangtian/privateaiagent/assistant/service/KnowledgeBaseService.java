@@ -1,5 +1,6 @@
 package top.tangtian.privateaiagent.assistant.service;
 
+import com.pgvector.PGvector;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import top.tangtian.privateaiagent.assistant.entity.UserKnowledge;
 import top.tangtian.privateaiagent.assistant.repository.UserKnowledgeRepository;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +103,7 @@ public class KnowledgeBaseService {
                 addKnowledge(userId,
                         resource.getFilename(),
                         doc,
-                        resource.getFilename(),
+                        resource.getContentAsString(Charset.defaultCharset()),
                         category,
                         metadata);
             }

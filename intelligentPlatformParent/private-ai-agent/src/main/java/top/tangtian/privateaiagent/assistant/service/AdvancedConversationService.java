@@ -1,7 +1,6 @@
 package top.tangtian.privateaiagent.assistant.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.knuddels.jtokkit.api.ModelType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -12,8 +11,10 @@ import top.tangtian.privateaiagent.assistant.chain.ToolChain;
 import top.tangtian.privateaiagent.assistant.chain.ToolChainEngine;
 import top.tangtian.privateaiagent.assistant.factory.PromptFactory;
 import top.tangtian.privateaiagent.assistant.mcp.MCPLifecycleManager;
+import top.tangtian.privateaiagent.assistant.mcp.ModelType;
 import top.tangtian.privateaiagent.assistant.service.vo.AdvancedChatRequest;
 import top.tangtian.privateaiagent.assistant.service.vo.AdvancedChatResponse;
+import top.tangtian.privateaiagent.assistant.service.vo.RetrievalResult;
 import top.tangtian.privateaiagent.assistant.tools.ToolRegistry;
 
 import java.util.HashMap;
@@ -154,7 +155,7 @@ public class AdvancedConversationService {
         log.info("处理知识库查询");
 
         // 1. 使用增强 RAG 检索
-        EnhancedRAGService.RetrievalResult retrieval = ragService.retrieveEnhanced(
+        RetrievalResult retrieval = ragService.retrieveEnhanced(
                 request.getUserId(),
                 request.getMessage()
         );
