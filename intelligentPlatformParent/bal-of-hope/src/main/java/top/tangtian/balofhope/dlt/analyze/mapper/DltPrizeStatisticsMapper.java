@@ -9,5 +9,4 @@ import top.tangtian.balofhope.dlt.analyze.entity.DltPrizeStatisticsEntity;
  * @date 2026-01-23 09:13
  */
 @Mapper
-
 public interface DltPrizeStatisticsMapper extends BaseMapper<DltPrizeStatisticsEntity> {}

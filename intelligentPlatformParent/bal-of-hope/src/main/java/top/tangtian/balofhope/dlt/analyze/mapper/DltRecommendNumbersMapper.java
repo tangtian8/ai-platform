@@ -9,5 +9,4 @@ import top.tangtian.balofhope.dlt.analyze.entity.DltRecommendNumbersEntity;
  * @date 2026-01-23 09:13
  */
 @Mapper
-
 public interface DltRecommendNumbersMapper extends BaseMapper<DltRecommendNumbersEntity> {}

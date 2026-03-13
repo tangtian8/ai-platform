@@ -388,14 +388,14 @@ public class DltDataAnalysisService {
 
 		// 策略1: 热号推荐（从TOP10中随机选5个）
 		List<Integer> hotRedPool = redStats.getHotNumbers().stream()
-				.limit(10)
+				.limit(5)
 				.map(NumberFrequency::getNumber)
 				.collect(Collectors.toList());
 		List<Integer> hotReds = getRandomNumbers(hotRedPool, Math.min(5, hotRedPool.size()), random);
 
 		// 策略2: 遗漏号推荐（从TOP10遗漏中随机选5个）
 		List<Integer> omissionRedPool = omission.getTopOmissions().stream()
-				.limit(10)
+				.limit(5)
 				.map(NumberOmission::getNumber)
 				.collect(Collectors.toList());
 		List<Integer> omissionReds = getRandomNumbers(omissionRedPool, Math.min(5, omissionRedPool.size()), random);
@@ -407,7 +407,7 @@ public class DltDataAnalysisService {
 
 		// 蓝球推荐（从TOP5热门蓝球中随机选2个）
 		List<Integer> bluePool = blueStats.getHotNumbers().stream()
-				.limit(5)
+				.limit(2)
 				.map(NumberFrequency::getNumber)
 				.collect(Collectors.toList());
 		List<Integer> recommendBlues = getRandomNumbers(bluePool, Math.min(2, bluePool.size()), random);

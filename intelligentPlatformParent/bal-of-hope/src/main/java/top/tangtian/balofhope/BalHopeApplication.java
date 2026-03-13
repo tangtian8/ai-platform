@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  */
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling   // 启用计划任务
 public class BalHopeApplication {
     public static void main(String[] args) {
         SpringApplication.run(BalHopeApplication.class, args);
