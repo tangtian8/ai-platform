@@ -2,11 +2,15 @@ package top.tangtian.balofhope.dlt.emailtool;
 
 import top.tangtian.balofhope.dlt.colletcion.model.CrawlResult;
 import top.tangtian.balofhope.dlt.recommend.entity.DltRecommendTaskEntity;
+import top.tangtian.balofhope.dlt.recommend.model.UserStatistics;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @program: ai-platform
@@ -21,7 +25,7 @@ public class DltEmailBuilder {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static String build(CrawlResult crawl, List<DltRecommendTaskEntity> tasks, Map<String, Object> stats) {
+    public static String build(CrawlResult crawl, List<DltRecommendTaskEntity> tasks, UserStatistics stats) {
         StringBuilder sb = new StringBuilder();
 
         // ========== 页面框架 ==========
@@ -100,63 +104,88 @@ public class DltEmailBuilder {
     // ==================== 预测准确性统计卡片 ====================
 
     @SuppressWarnings("unchecked")
-    private static String buildStatsCard(Map<String, Object> stats) {
-        int    totalTasks  = toInt(stats.get("totalTasks"));
-        int    prizeTasks  = toInt(stats.get("prizeTasks"));
-        double prizeRate   = toDouble(stats.get("prizeRate"));
-        Map<String, Integer> levelCount =
-                stats.get("prizeLevelCount") instanceof Map<?,?> m
-                        ? (Map<String, Integer>) m : Map.of();
+    private static String buildStatsCard(UserStatistics stats) {
 
-        // 命中率颜色：>=10% 绿，>=5% 橙，<5% 灰
+        int totalTasks = stats.getTotalTasks() == null ? 0 : stats.getTotalTasks();
+        int prizeTasks = stats.getHitTasksCount() == null ? 0 : stats.getHitTasksCount();
+
+        double prizeRate = totalTasks == 0 ? 0 : (prizeTasks * 100.0 / totalTasks);
+
+        // 统计各奖级数量
+        Map<String, Long> levelCount = Optional.ofNullable(stats.getHitDetails())
+                .map(UserStatistics.HitDetails::getHitLevelList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(v -> v.getPrizeLevel() != null && !"未中奖".equals(v.getPrizeLevel()))
+                .collect(Collectors.groupingBy(
+                        UserStatistics.HitLevel::getPrizeLevel,
+                        Collectors.counting()
+                ));
+
+        // 命中率颜色
         String rateColor = prizeRate >= 10 ? "#52c41a" : prizeRate >= 5 ? "#fa8c16" : "#aaa";
-        String rateText  = String.format("%.1f%%", prizeRate);
+        String rateText = String.format("%.1f%%", prizeRate);
 
-        // 环形进度条（用宽度比例模拟）
-        int barWidth = Math.min((int) prizeRate * 5, 100); // 放大5倍便于显示，最大100%
+        int barWidth = Math.min((int) prizeRate * 5, 100);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<div style='background:#fff;padding:24px 32px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;border-top:1px solid #f0f0f0'>");
-        sb.append("<h3 style='margin:0 0 16px;color:#333;font-size:15px;border-left:4px solid #faad14;padding-left:10px'>&#128200; 预测准确性统计</h3>");
 
-        // 顶部三个核心指标
+        sb.append("<div style='background:#fff;padding:24px 32px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;border-top:1px solid #f0f0f0'>");
+
+        sb.append("<h3 style='margin:0 0 16px;color:#333;font-size:15px;border-left:4px solid #faad14;padding-left:10px'>📊 预测准确性统计</h3>");
+
+        // === 顶部指标 ===
         sb.append("<div style='display:flex;gap:12px;margin-bottom:20px;text-align:center'>");
 
-        appendMetricBox(sb, "&#128203; 总验证期数", String.valueOf(totalTasks), "期", "#1677ff", "#e6f4ff");
-        appendMetricBox(sb, "&#127942; 命中次数",   String.valueOf(prizeTasks),  "次", "#52c41a", "#f6ffed");
-        appendMetricBox(sb, "&#127919; 命中率",     rateText,                    "",   rateColor, "#fffbe6");
+        appendMetricBox(sb, "📋 总验证期数", String.valueOf(totalTasks), "期", "#1677ff", "#e6f4ff");
+        appendMetricBox(sb, "🏆 命中次数", String.valueOf(prizeTasks), "次", "#52c41a", "#f6ffed");
+        appendMetricBox(sb, "🎯 命中率", rateText, "", rateColor, "#fffbe6");
 
         sb.append("</div>");
 
-        // 命中率进度条
+        // === 命中率进度条 ===
         sb.append("<div style='margin-bottom:20px'>");
         sb.append("<div style='display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px'>");
-        sb.append("<span>命中率</span><span style='color:").append(rateColor).append(";font-weight:bold'>").append(rateText).append("</span></div>");
+        sb.append("<span>命中率</span><span style='color:")
+                .append(rateColor)
+                .append(";font-weight:bold'>")
+                .append(rateText)
+                .append("</span></div>");
+
         sb.append("<div style='background:#f0f0f0;border-radius:4px;height:8px;overflow:hidden'>");
-        sb.append("<div style='background:").append(rateColor)
-                .append(";width:").append(barWidth).append("%;height:100%;border-radius:4px;").append("'></div>");
+        sb.append("<div style='background:")
+                .append(rateColor)
+                .append(";width:")
+                .append(barWidth)
+                .append("%;height:100%;border-radius:4px;'></div>");
         sb.append("</div></div>");
 
-        // 各奖级分布
+        // === 奖级分布 ===
         if (!levelCount.isEmpty()) {
             sb.append("<div>");
             sb.append("<p style='font-size:13px;color:#888;margin:0 0 10px'>各奖级命中分布：</p>");
             sb.append("<div style='display:flex;flex-wrap:wrap;gap:8px'>");
+
             levelCount.entrySet().stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                     .forEach(entry -> {
                         String lvColor = getLevelColor(entry.getKey());
-                        sb.append("<span style='background:").append(lvColor).append(";")
-                                .append("color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:bold'>")
-                                .append(entry.getKey()).append(" × ").append(entry.getValue())
+                        sb.append("<span style='background:")
+                                .append(lvColor)
+                                .append(";color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:bold'>")
+                                .append(entry.getKey())
+                                .append(" × ")
+                                .append(entry.getValue())
                                 .append("</span>");
                     });
+
             sb.append("</div></div>");
         } else {
             sb.append("<p style='color:#bbb;font-size:13px;text-align:center;margin:8px 0'>暂无命中记录</p>");
         }
 
-        sb.append("</div>"); // end stats card
+        sb.append("</div>");
+
         return sb.toString();
     }
 

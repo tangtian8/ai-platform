@@ -12,13 +12,13 @@ import top.tangtian.balofhope.dlt.colletcion.model.CrawlResult;
 import top.tangtian.balofhope.dlt.emailtool.DltEmailBuilder;
 import top.tangtian.balofhope.dlt.emailtool.EmailService;
 import top.tangtian.balofhope.dlt.recommend.entity.DltRecommendTaskEntity;
+import top.tangtian.balofhope.dlt.recommend.model.UserStatistics;
 import top.tangtian.balofhope.dlt.recommend.service.DltRecommendTaskGenerator;
 import top.tangtian.balofhope.dlt.recommend.service.DltRecommendTaskService;
 import top.tangtian.balofhope.dlt.recommend.service.DltRecommendVerifyService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @program: ai-platform
@@ -59,7 +59,7 @@ public class ScheduledCollectionAndRecommend {
         //验证上一期的推荐任务
         dltRecommendVerifyService.verifyUserTasks(USERID);
         //获取推荐的正确性
-        Map<String, Object> userStatistics = getUserStatistics(USERID);
+        UserStatistics userStatistics = getUserStatistics(USERID);
         //生成最新的推荐任务
         dltRecommendTaskGenerator.generateRecommendTask(USERID,"唐甜", 100, "DAILY");
         //查询最新的推荐任务
@@ -69,7 +69,7 @@ public class ScheduledCollectionAndRecommend {
     }
 
 
-    public Map<String, Object> getUserStatistics(Long userId) {
+    public UserStatistics getUserStatistics(Long userId) {
         QueryWrapper<DltRecommendTaskEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId)
                 .eq("is_drawed", true)
@@ -81,26 +81,55 @@ public class ScheduledCollectionAndRecommend {
         stats.put("userId", userId);
         stats.put("totalTasks", tasks.size());
 
-        int prizeTasks = 0;
-        Map<String, Integer> prizeLevelCount = new HashMap<>();
+        UserStatistics userStatistics = new UserStatistics();
 
+        //命中期数
+        int hitTasksCount = 0;
         for (DltRecommendTaskEntity task : tasks) {
-            String[] levels = {task.getPrizeLevel1(), task.getPrizeLevel2(),
-                    task.getPrizeLevel3(), task.getPrizeLevel4()};
 
-            for (String level : levels) {
+
+            List<UserStatistics.HitLevel> list = Arrays.asList(
+                    build(task.getPrizeLevel1(), task.getHitRedCount1(), task.getHitBlueCount1(), task.getRedBalls1(), task.getBlueBalls1()),
+                    build(task.getPrizeLevel2(), task.getHitRedCount2(), task.getHitBlueCount2(), task.getRedBalls2(), task.getBlueBalls2()),
+                    build(task.getPrizeLevel3(), task.getHitRedCount3(), task.getHitBlueCount3(), task.getRedBalls3(), task.getBlueBalls3()),
+                    build(task.getPrizeLevel4(), task.getHitRedCount4(), task.getHitBlueCount4(), task.getRedBalls4(), task.getBlueBalls4())
+            );
+
+            Map<String, UserStatistics.HitLevel> map = list.stream()
+                    .collect(Collectors.toMap(UserStatistics.HitLevel::getPrizeLevel, v -> v));
+
+
+            UserStatistics.HitDetails hitDetails = new UserStatistics.HitDetails();
+            hitDetails.setRecommendBatch(task.getRecommendBatch());
+            hitDetails.setActualNum(task.getActualDrawNum());
+            List<UserStatistics.HitLevel> hitLevelList = new ArrayList<>();
+            boolean isWin = map.keySet().stream().anyMatch(level -> level != null && !"未中奖".equals(level));
+            if (isWin) {
+                hitTasksCount++;
+            }
+            for (String level : map.keySet()) {
                 if (level != null && !level.equals("未中奖")) {
-                    prizeTasks++;
-                    prizeLevelCount.put(level, prizeLevelCount.getOrDefault(level, 0) + 1);
+                    hitLevelList.add(map.get(level));
                 }
             }
+            hitDetails.setHitLevelList(hitLevelList);
         }
 
-        stats.put("prizeTasks", prizeTasks);
-        stats.put("prizeRate", tasks.size() > 0 ? (prizeTasks * 100.0 / (tasks.size() * 4)) : 0);
-        stats.put("prizeLevelCount", prizeLevelCount);
+        userStatistics.setUserId(userId);
+        userStatistics.setTotalTasks(tasks.size());
+        userStatistics.setHitTasksCount(hitTasksCount);
 
-        return stats;
+        return userStatistics;
+    }
+
+    private UserStatistics.HitLevel build(String level, Integer red, Integer blue, String redBall, String blueBall) {
+        return UserStatistics.HitLevel.builder()
+                .prizeLevel(level)
+                .hitRedCount(red)
+                .hitBlueCount(blue)
+                .redBall(redBall)
+                .blueBall(blueBall)
+                .build();
     }
 
 

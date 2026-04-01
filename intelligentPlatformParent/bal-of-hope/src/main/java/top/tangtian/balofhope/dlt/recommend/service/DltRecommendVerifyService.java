@@ -131,6 +131,7 @@ public class DltRecommendVerifyService {
 		task.setActualDrawResult(drawResult);
 		task.setBestRecommendNo(bestNo);
 		task.setVerifyTime(LocalDateTime.now());
+		task.setUpdateTime(LocalDateTime.now());
 
 		recommendTaskService.updateById(task);
 
@@ -183,18 +184,19 @@ public class DltRecommendVerifyService {
 	}
 
 	/**
-	 * 判断中奖等级
+	 * 判断中奖等级（大乐透规则）
+	 * hitRed: 命中前区号码数量（0-5）
+	 * hitBlue: 命中后区号码数量（0-2）
 	 */
 	private String determinePrizeLevel(int hitRed, int hitBlue) {
 		if (hitRed == 5 && hitBlue == 2) return "一等奖";
 		if (hitRed == 5 && hitBlue == 1) return "二等奖";
-		if (hitRed == 5 && hitBlue == 0) return "三等奖";
-		if (hitRed == 4 && hitBlue == 2) return "四等奖";
-		if (hitRed == 4 && hitBlue == 1) return "五等奖";
-		if ((hitRed == 3 && hitBlue == 2) || (hitRed == 4 && hitBlue == 0)) return "六等奖";
-		if ((hitRed == 2 && hitBlue == 2) || (hitRed == 3 && hitBlue == 1)) return "七等奖";
-		if ((hitRed == 1 && hitBlue == 2) || (hitRed == 2 && hitBlue == 1) || (hitRed == 3 && hitBlue == 0)) return "八等奖";
-		if ((hitRed == 0 && hitBlue == 2) || (hitRed == 1 && hitBlue == 1)) return "九等奖";
+		if ((hitRed == 5 && hitBlue == 0) || (hitRed == 4 && hitBlue == 2)) return "三等奖";
+		if (hitRed == 4 && hitBlue == 1) return "四等奖";
+		if ((hitRed == 4 && hitBlue == 0) || (hitRed == 3 && hitBlue == 2)) return "五等奖";
+		if ((hitRed == 3 && hitBlue == 1) || (hitRed == 2 && hitBlue == 2)) return "六等奖";
+		if ((hitRed == 3 && hitBlue == 0) || (hitRed == 2 && hitBlue == 1)
+				|| (hitRed == 1 && hitBlue == 2) || (hitRed == 0 && hitBlue == 2)) return "七等奖";
 		return "未中奖";
 	}
 
