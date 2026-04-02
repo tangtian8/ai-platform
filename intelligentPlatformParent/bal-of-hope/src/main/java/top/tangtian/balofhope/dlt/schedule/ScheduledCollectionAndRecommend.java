@@ -18,7 +18,9 @@ import top.tangtian.balofhope.dlt.recommend.service.DltRecommendTaskService;
 import top.tangtian.balofhope.dlt.recommend.service.DltRecommendVerifyService;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @program: ai-platform
@@ -61,7 +63,7 @@ public class ScheduledCollectionAndRecommend {
         //获取推荐的正确性
         UserStatistics userStatistics = getUserStatistics(USERID);
         //生成最新的推荐任务
-        dltRecommendTaskGenerator.generateRecommendTask(USERID,"唐甜", 100, "DAILY");
+//        dltRecommendTaskGenerator.generateRecommendTask(USERID,"唐甜", 100, "DAILY");
         //查询最新的推荐任务
         List<DltRecommendTaskEntity> userRecommends = getUserRecommends(USERID, 1);
         String html = DltEmailBuilder.build(crawlResult, userRecommends,userStatistics);
@@ -73,7 +75,7 @@ public class ScheduledCollectionAndRecommend {
         QueryWrapper<DltRecommendTaskEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId)
                 .eq("is_drawed", true)
-                .eq("is_deleted", 0);
+                .eq("is_deleted", 0).orderByDesc("actual_draw_num");
 
         List<DltRecommendTaskEntity> tasks = recommendTaskService.list(wrapper);
 
@@ -83,44 +85,75 @@ public class ScheduledCollectionAndRecommend {
 
         UserStatistics userStatistics = new UserStatistics();
 
-        //命中期数
+
+        // 统计中奖的期数
         int hitTasksCount = 0;
-        for (DltRecommendTaskEntity task : tasks) {
+        UserStatistics.HitDetails hitDetails = new UserStatistics.HitDetails();
 
+        for (int i = 0; i < tasks.size(); i++) {
+            DltRecommendTaskEntity task = tasks.get(i);
+            List<UserStatistics.HitLevel> hitLevelList = buildHitLevelList(task);
 
-            List<UserStatistics.HitLevel> list = Arrays.asList(
-                    build(task.getPrizeLevel1(), task.getHitRedCount1(), task.getHitBlueCount1(), task.getRedBalls1(), task.getBlueBalls1()),
-                    build(task.getPrizeLevel2(), task.getHitRedCount2(), task.getHitBlueCount2(), task.getRedBalls2(), task.getBlueBalls2()),
-                    build(task.getPrizeLevel3(), task.getHitRedCount3(), task.getHitBlueCount3(), task.getRedBalls3(), task.getBlueBalls3()),
-                    build(task.getPrizeLevel4(), task.getHitRedCount4(), task.getHitBlueCount4(), task.getRedBalls4(), task.getBlueBalls4())
-            );
-
-            Map<String, UserStatistics.HitLevel> map = list.stream()
-                    .collect(Collectors.toMap(UserStatistics.HitLevel::getPrizeLevel, v -> v));
-
-
-            UserStatistics.HitDetails hitDetails = new UserStatistics.HitDetails();
-            hitDetails.setRecommendBatch(task.getRecommendBatch());
-            hitDetails.setActualNum(task.getActualDrawNum());
-            List<UserStatistics.HitLevel> hitLevelList = new ArrayList<>();
-            boolean isWin = map.keySet().stream().anyMatch(level -> level != null && !"未中奖".equals(level));
-            if (isWin) {
+            boolean hasHit = hitLevelList.stream()
+                    .anyMatch(v -> !"未中奖".equals(v.getPrizeLevel()));
+            if (hasHit) {
                 hitTasksCount++;
             }
-            for (String level : map.keySet()) {
-                if (level != null && !level.equals("未中奖")) {
-                    hitLevelList.add(map.get(level));
-                }
+
+            // 顺便处理最新一期（第一条）
+            if (i == 0) {
+                hitDetails.setActualBatch(task.getActualDrawNum());
+                hitDetails.setActualNum(task.getActualDrawResult());
+                hitDetails.setHitLevelList(hitLevelList);
             }
-            hitDetails.setHitLevelList(hitLevelList);
         }
 
         userStatistics.setUserId(userId);
         userStatistics.setTotalTasks(tasks.size());
         userStatistics.setHitTasksCount(hitTasksCount);
+        userStatistics.setHitDetails(hitDetails);
+        userStatistics.setPrizeLevelInfo(countPrizeLevels(tasks));
 
         return userStatistics;
     }
+
+    public List<UserStatistics.PrizeLevel> countPrizeLevels(List<DltRecommendTaskEntity> tasks) {
+        List<String> PRIZE_ORDER = Arrays.asList(
+                "一等奖", "二等奖", "三等奖", "四等奖", "五等奖", "六等奖", "七等奖"
+        );
+
+        Map<String, Long> prizeStatistics = tasks.stream()
+                .flatMap(task -> Stream.of(
+                                task.getPrizeLevel1(),
+                                task.getPrizeLevel2(),
+                                task.getPrizeLevel3(),
+                                task.getPrizeLevel4()
+                        )
+                        .filter(level -> level != null && !"未中奖".equals(level))
+                        .distinct())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        return PRIZE_ORDER.stream()
+                .filter(prizeStatistics::containsKey)
+                .map(level -> UserStatistics.PrizeLevel.builder()
+                        .prizeLevel(level)
+                        .count(prizeStatistics.get(level).intValue())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+
+    // 抽取方法
+    private List<UserStatistics.HitLevel> buildHitLevelList(DltRecommendTaskEntity task) {
+        return Arrays.asList(
+                build(task.getPrizeLevel1(), task.getHitRedCount1(), task.getHitBlueCount1(), task.getRedBalls1(), task.getBlueBalls1()),
+                build(task.getPrizeLevel2(), task.getHitRedCount2(), task.getHitBlueCount2(), task.getRedBalls2(), task.getBlueBalls2()),
+                build(task.getPrizeLevel3(), task.getHitRedCount3(), task.getHitBlueCount3(), task.getRedBalls3(), task.getBlueBalls3()),
+                build(task.getPrizeLevel4(), task.getHitRedCount4(), task.getHitBlueCount4(), task.getRedBalls4(), task.getBlueBalls4())
+        );
+    }
+
+
 
     private UserStatistics.HitLevel build(String level, Integer red, Integer blue, String redBall, String blueBall) {
         return UserStatistics.HitLevel.builder()

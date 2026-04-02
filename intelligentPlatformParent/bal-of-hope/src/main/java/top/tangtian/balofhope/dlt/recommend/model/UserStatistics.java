@@ -20,15 +20,17 @@ public class UserStatistics {
     private Integer totalTasks;
     //命中的任务数量
     private Integer hitTasksCount;
-    //命中详情
-    private  HitDetails hitDetails;
+    //最新一期命中详情
+    private HitDetails hitDetails;
+
+    private List<PrizeLevel> prizeLevelInfo;
 
     //命中详情
     @Data
     public static class HitDetails {
         //推荐批次
-        private String recommendBatch;
-        //推荐号码
+        private String actualBatch;
+        //实际开奖号码
         private String actualNum;
         //命中等级
         private List<HitLevel> hitLevelList;
@@ -47,6 +49,16 @@ public class UserStatistics {
         private String redBall;
         //命中篮球数量
         private String blueBall;
+
+    }
+
+    @Data
+    @Builder
+    public static class PrizeLevel  {
+        //命中等级
+        private String prizeLevel;
+
+        private Integer count;
 
     }
 }

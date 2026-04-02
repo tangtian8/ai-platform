@@ -25,6 +25,7 @@ D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\colletcion\model\resp\DltLotteryDraw.java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\analyze\service\vo\RecommendNumbers.java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\analyze\service\vo\SalesTrendData.java
+D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\recommend\model\UserStatistics.java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\analyze\service\analysisstorage\IDltAnalysisReportService.java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltNumberFrequencyServiceImpl.java
 D:\2026\daydayup\ai-platform\intelligentPlatformParent\bal-of-hope\src\main\java\top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltNumberOmissionServiceImpl.java

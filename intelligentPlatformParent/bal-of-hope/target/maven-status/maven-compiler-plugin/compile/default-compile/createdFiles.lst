@@ -6,9 +6,11 @@ top\tangtian\balofhope\ssq\model\reponse\LotteryResult.class
 top\tangtian\balofhope\dlt\config\MyMetaObjectHandler.class
 top\tangtian\balofhope\dlt\analyze\service\vo\ComprehensiveAnalysisReport.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\IDltNumberFrequencyService.class
+top\tangtian\balofhope\dlt\recommend\model\UserStatistics$HitLevel$HitLevelBuilder.class
 top\tangtian\balofhope\dlt\storage\entity\DltPrizeLevelEntity.class
 top\tangtian\balofhope\dlt\analyze\entity\DltAnalysisReportEntity.class
 top\tangtian\balofhope\dlt\analyze\service\vo\NumberOmissionAnalysis.class
+top\tangtian\balofhope\dlt\recommend\model\UserStatistics.class
 top\tangtian\balofhope\dlt\analyze\entity\DltNumberFrequencyEntity.class
 top\tangtian\balofhope\dlt\analyze\service\analysisquery\DltAnalysisQueryService.class
 top\tangtian\balofhope\dlt\storage\mapper\DltLotteryDrawMapper.class
@@ -24,6 +26,7 @@ top\tangtian\balofhope\dlt\analyze\service\vo\PrizeLevelStats.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltDataAnalysisService.class
 top\tangtian\balofhope\dlt\emailtool\DltEmailBuilder.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\IDltRecommendNumbersService.class
+top\tangtian\balofhope\dlt\recommend\model\UserStatistics$HitLevel.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltPrizeStatisticsServiceImpl.class
 top\tangtian\balofhope\dlt\colletcion\model\resp\DltApiResponse.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\IDltPrizeStatisticsService.class
@@ -51,6 +54,7 @@ top\tangtian\balofhope\dlt\colletcion\model\resp\LastPoolDraw.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltRecommendNumbersServiceImpl.class
 top\tangtian\balofhope\dlt\emailtool\EmailService$1.class
 top\tangtian\balofhope\dlt\analyze\service\analysisstorage\impl\DltPoolTrendServiceImpl.class
+top\tangtian\balofhope\dlt\recommend\model\UserStatistics$HitDetails.class
 top\tangtian\balofhope\dlt\analyze\service\vo\PrizeStatisticsAnalysis.class
 top\tangtian\balofhope\dlt\schedule\ScheduledCollectionAndRecommend.class
 top\tangtian\balofhope\dlt\analyze\entity\DltNumberOmissionEntity.class
