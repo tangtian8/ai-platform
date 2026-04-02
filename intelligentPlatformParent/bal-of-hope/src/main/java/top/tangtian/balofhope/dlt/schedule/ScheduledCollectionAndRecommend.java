@@ -63,7 +63,7 @@ public class ScheduledCollectionAndRecommend {
         //获取推荐的正确性
         UserStatistics userStatistics = getUserStatistics(USERID);
         //生成最新的推荐任务
-//        dltRecommendTaskGenerator.generateRecommendTask(USERID,"唐甜", 100, "DAILY");
+        dltRecommendTaskGenerator.generateRecommendTask(USERID,"唐甜", 100, "DAILY");
         //查询最新的推荐任务
         List<DltRecommendTaskEntity> userRecommends = getUserRecommends(USERID, 1);
         String html = DltEmailBuilder.build(crawlResult, userRecommends,userStatistics);

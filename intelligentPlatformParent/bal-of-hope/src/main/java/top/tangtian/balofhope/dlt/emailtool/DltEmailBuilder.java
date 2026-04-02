@@ -306,14 +306,19 @@ public class DltEmailBuilder {
         appendPrizeRow(sb, "一等奖", buildBalls(5, 2),
                 "浮动奖<br><span style='color:#999;font-size:10px'>最高1000万</span>",
                 "浮动奖<br><span style='color:#999;font-size:10px'>最高1800万</span>");
-        appendPrizeRow(sb, "二等奖", buildBalls(5, 0),
+        appendPrizeRow(sb, "二等奖", buildBalls(5, 1),                                    // 5红+1蓝
                 "浮动奖",
                 "浮动奖<br><span style='color:#999;font-size:10px'>追加多80%</span>");
-        appendPrizeRow(sb, "三等奖", buildMultiBalls(new int[][]{{4, 2}, {5, 1}}), "5,000元", "6,666元");
-        appendPrizeRow(sb, "四等奖", buildBalls(3, 2),                             "300元",   "380元");
-        appendPrizeRow(sb, "五等奖", buildMultiBalls(new int[][]{{3, 1}, {4, 0}}), "150元",   "200元");
-        appendPrizeRow(sb, "六等奖", buildMultiBalls(new int[][]{{2, 2}, {3, 0}}), "15元",    "18元");
-        appendPrizeRow(sb, "七等奖", buildMultiBalls(new int[][]{{0, 2}, {1, 2}, {2, 0}}), "5元", "7元");
+        appendPrizeRow(sb, "三等奖", buildMultiBalls(new int[][]{{5, 0}, {4, 2}}),         // 5红 / 4红+2蓝
+                "5,000元", "6,666元");
+        appendPrizeRow(sb, "四等奖", buildBalls(4, 1),                                    // 4红+1蓝
+                "300元", "380元");
+        appendPrizeRow(sb, "五等奖", buildMultiBalls(new int[][]{{4, 0}, {3, 2}}),         // 4红 / 3红+2蓝
+                "150元", "200元");
+        appendPrizeRow(sb, "六等奖", buildMultiBalls(new int[][]{{3, 1}, {2, 2}}),         // 3红+1蓝 / 2红+2蓝
+                "15元", "18元");
+        appendPrizeRow(sb, "七等奖", buildMultiBalls(new int[][]{{3, 0}, {2, 1}, {1, 2}, {0, 2}}), // 3红 / 2红+1蓝 / 1红+2蓝 / 2蓝
+                "5元", "7元");
 
         sb.append("</tbody></table></div></div>");
         return sb.toString();
@@ -333,10 +338,10 @@ public class DltEmailBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append("<div style='display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:wrap'>");
         for (int i = 0; i < red; i++) {
-            sb.append("<span style='width:14px;height:14px;border-radius:50%;background:#4a90d9;display:inline-block'></span>");
+            sb.append("<span style='width:14px;height:14px;border-radius:50%;background:#ff4d4f;display:inline-block'></span>");
         }
         for (int i = 0; i < blue; i++) {
-            sb.append("<span style='width:14px;height:14px;border-radius:50%;background:#f5a623;display:inline-block'></span>");
+            sb.append("<span style='width:14px;height:14px;border-radius:50%;background:#1677ff;display:inline-block'></span>");
         }
         sb.append("</div>");
         return sb.toString();
